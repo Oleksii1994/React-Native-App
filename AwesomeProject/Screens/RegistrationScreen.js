@@ -5,19 +5,31 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Button,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  Alert,
 } from "react-native";
+import React, { useState } from "react";
 import { useFonts } from "expo-font";
 import { styles } from "../styles/registration.styles";
 
 export const RegistrationScreen = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [fontsLoaded] = useFonts({
     RobotoMedium: require("../assets/fonts/robotomedium.ttf"),
     RobotoRegular: require("../assets/fonts/robotoregular.ttf"),
   });
+
+  const onRegister = () => {
+    Alert.alert("Credentials", `${name} + ${email} + ${password}`);
+    console.log("Credentials", `${name} + ${email} + ${password}`);
+  };
+
   if (!fontsLoaded) {
     return null;
   }
@@ -43,12 +55,24 @@ export const RegistrationScreen = () => {
               </View>
               <Text style={styles.registerTitle}>Registration</Text>
               <View style={styles.inputsContainer}>
-                <TextInput style={styles.input} placeholder="Login"></TextInput>
-                <TextInput style={styles.input} placeholder="Email"></TextInput>
+                <TextInput
+                  style={styles.input}
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="Login"
+                ></TextInput>
+                <TextInput
+                  style={styles.input}
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="Email"
+                ></TextInput>
                 <View style={styles.passwordContainer}>
                   <TextInput
                     style={styles.inputLast}
                     secureTextEntry={true}
+                    onChangeText={setPassword}
+                    value={password}
                     placeholder="Password"
                   ></TextInput>
                   <TouchableOpacity style={styles.showPasswordContainer}>
@@ -56,7 +80,8 @@ export const RegistrationScreen = () => {
                   </TouchableOpacity>
                 </View>
               </View>
-              <TouchableOpacity title="Sign up" style={styles.signUpBtn}>
+
+              <TouchableOpacity onPress={onRegister} style={styles.signUpBtn}>
                 <Text style={styles.btnLabel}>Sign Up</Text>
               </TouchableOpacity>
               <View>

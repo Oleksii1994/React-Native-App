@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { useFonts } from "expo-font";
@@ -27,9 +28,16 @@ export const LoginScreen = () => {
   //   setIsShowKeyboard(false);
   //   Keyboard.dismiss();
   // };
+
+  const onLogin = () => {
+    Alert.alert("Credentials", `${email} + ${password}`);
+    console.log("Credentials", `${email} + ${password}`);
+  };
+
   if (!fontsLoaded) {
     return null;
   }
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -45,10 +53,17 @@ export const LoginScreen = () => {
             <View style={styles.loginFormBox}>
               <Text style={styles.LoginTitle}>Log In</Text>
               <View style={styles.inputsContainer}>
-                <TextInput style={styles.input} placeholder="Email"></TextInput>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setEmail}
+                  value={email}
+                  placeholder="Email"
+                ></TextInput>
                 <View style={styles.passwordContainer}>
                   <TextInput
                     style={styles.inputLast}
+                    value={password}
+                    onChangeText={setPassword}
                     placeholder="Password"
                     textContentType="password"
                     secureTextEntry={true}
@@ -58,7 +73,7 @@ export const LoginScreen = () => {
                   </TouchableOpacity>
                 </View>
               </View>
-              <TouchableOpacity title="Sign up" style={styles.logInBtn}>
+              <TouchableOpacity onPress={onLogin} style={styles.logInBtn}>
                 <Text style={styles.btnLabel}>Log In</Text>
               </TouchableOpacity>
               <View>
