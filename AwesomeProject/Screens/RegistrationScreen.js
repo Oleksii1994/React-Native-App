@@ -28,6 +28,9 @@ export const RegistrationScreen = () => {
   const onRegister = () => {
     Alert.alert("Credentials", `${name} + ${email} + ${password}`);
     console.log("Credentials", `${name} + ${email} + ${password}`);
+    setName("");
+    setPassword("");
+    setEmail("");
   };
 
   if (!fontsLoaded) {

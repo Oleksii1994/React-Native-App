@@ -32,6 +32,8 @@ export const LoginScreen = () => {
   const onLogin = () => {
     Alert.alert("Credentials", `${email} + ${password}`);
     console.log("Credentials", `${email} + ${password}`);
+    setPassword("");
+    setEmail("");
   };
 
   if (!fontsLoaded) {
