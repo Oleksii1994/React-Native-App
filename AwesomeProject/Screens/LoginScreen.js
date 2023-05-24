@@ -15,25 +15,28 @@ import React, { useState } from "react";
 import { useFonts } from "expo-font";
 import { styles } from "../styles/login.styles";
 
+const initialState = {
+  email: "",
+  password: "",
+};
+
 export const LoginScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [state, setState] = useState(initialState);
+  const [isShowPassword, setIsShowPassword] = useState(true);
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
   const [fontsLoaded] = useFonts({
     RobotoMedium: require("../assets/fonts/robotomedium.ttf"),
     RobotoRegular: require("../assets/fonts/robotoregular.ttf"),
   });
-  // const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-
-  // const handleSubmit = () => {
-  //   setIsShowKeyboard(false);
-  //   Keyboard.dismiss();
-  // };
 
   const onLogin = () => {
-    Alert.alert("Credentials", `${email} + ${password}`);
-    console.log("Credentials", `${email} + ${password}`);
-    setPassword("");
-    setEmail("");
+    console.log(state);
+    setState(initialState);
+  };
+
+  const handlePasswordVisibility = () => {
+    setIsShowPassword(!isShowPassword);
   };
 
   if (!fontsLoaded) {
@@ -57,21 +60,28 @@ export const LoginScreen = () => {
               <View style={styles.inputsContainer}>
                 <TextInput
                   style={styles.input}
-                  onChangeText={setEmail}
-                  value={email}
+                  onChangeText={(text) => setState({ ...state, email: text })}
+                  value={state.email}
                   placeholder="Email"
                 ></TextInput>
                 <View style={styles.passwordContainer}>
                   <TextInput
                     style={styles.inputLast}
-                    value={password}
-                    onChangeText={setPassword}
+                    value={state.password}
+                    onChangeText={(text) =>
+                      setState({ ...state, password: text })
+                    }
                     placeholder="Password"
                     textContentType="password"
-                    secureTextEntry={true}
+                    secureTextEntry={!isShowPassword}
                   ></TextInput>
-                  <TouchableOpacity style={styles.showPasswordContainer}>
-                    <Text style={styles.showPasswordText}>Show</Text>
+                  <TouchableOpacity
+                    style={styles.showPasswordContainer}
+                    onPress={handlePasswordVisibility}
+                  >
+                    <Text style={styles.showPasswordText}>
+                      {!isShowPassword ? "Show" : "Hide"}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
