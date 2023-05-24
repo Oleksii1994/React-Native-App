@@ -13,7 +13,8 @@ export const styles = StyleSheet.create({
 
     top: 0,
     left: 0,
-    transform: [{ translateX: -216 }, { translateY: -466 }],
+    // transform: [{ translateX: -216 }, { translateY: -466 }],
+    transform: [{ translateX: -216 }],
 
     flex: 1,
     justifyContent: "center",
@@ -35,6 +36,7 @@ export const styles = StyleSheet.create({
   registrationFormBox: {
     flex: 1,
     position: "absolute",
+    //
     transform: [{ translateX: -216 }, { translateY: -60 }],
 
     width: 432,

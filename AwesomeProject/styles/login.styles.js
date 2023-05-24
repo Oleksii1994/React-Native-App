@@ -13,7 +13,8 @@ export const styles = StyleSheet.create({
 
     top: 0,
     left: 0,
-    transform: [{ translateX: -216 }, { translateY: -466 }],
+    // transform: [{ translateX: -216 }, { translateY: -466 }],
+    transform: [{ translateX: -216 }],
 
     flex: 1,
     justifyContent: "center",
