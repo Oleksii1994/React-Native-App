@@ -1,13 +1,71 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Image } from "react-native";
+
+import "react-native-gesture-handler";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { RegistrationScreen } from "./Screens/RegistrationScreen";
+import { CreatePostsScreen } from "./Screens/CreatePostsScreen";
 import { LoginScreen } from "./Screens/LoginScreen";
+import { ProfileScreen } from "./Screens/ProfileScreen";
+import { Home } from "./Screens/Home";
+
+const MainStack = createStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <LoginScreen />
-    </View>
+    <NavigationContainer>
+      <MainStack.Navigator initialRouteName="Login">
+        <MainStack.Screen name="Registration" component={RegistrationScreen} />
+
+        <MainStack.Screen name="Login" component={LoginScreen} />
+        <MainStack.Screen
+          name="Home"
+          component={Home}
+          options={({ navigation }) => ({
+            // Обновленная часть
+            headerRight: () => (
+              <TouchableOpacity
+                style={styles.logoutBtn}
+                onPress={() =>
+                  navigation.navigate("Login", { screen: "Login" })
+                }
+              >
+                <Image
+                  source={require("./assets/images/logout.png")}
+                  style={{ width: 24, height: 24, marginRight: 10 }}
+                ></Image>
+              </TouchableOpacity>
+            ),
+          })}
+        />
+        <MainStack.Screen
+          name="Posts"
+          component={Home}
+          options={({ navigation }) => ({
+            headerRight: () => (
+              <TouchableOpacity
+                style={styles.logoutBtn}
+                onPress={() =>
+                  navigation.navigate("Login", { screen: "Login" })
+                }
+              >
+                <Image
+                  source={require("./assets/images/logout.png")}
+                  style={{ width: 24, height: 24, marginRight: 10 }}
+                ></Image>
+              </TouchableOpacity>
+            ),
+          })}
+        />
+        <MainStack.Screen
+          name="CreatePostsScreen"
+          component={CreatePostsScreen}
+        />
+        <MainStack.Screen name="ProfileScreen" component={ProfileScreen} />
+      </MainStack.Navigator>
+    </NavigationContainer>
   );
 }
 

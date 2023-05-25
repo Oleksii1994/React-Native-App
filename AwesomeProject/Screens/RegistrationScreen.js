@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { useFonts } from "expo-font";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { styles } from "../styles/registration.styles";
 
 const initialState = {
@@ -25,6 +26,7 @@ const initialState = {
 export const RegistrationScreen = () => {
   const [state, setState] = useState(initialState);
   const [isShowPassword, setIsShowPassword] = useState(true);
+  const navigation = useNavigation();
 
   const [fontsLoaded] = useFonts({
     RobotoMedium: require("../assets/fonts/robotomedium.ttf"),
@@ -32,8 +34,27 @@ export const RegistrationScreen = () => {
   });
 
   const onRegister = () => {
+    if (!state.email || !state.password || !state.userName) {
+      Alert.alert("All fields must be filled");
+      return;
+    }
+
+    if (!state.email.includes("@")) {
+      Alert.alert("Enter a valid email address (Example: xxxx@yyyy.zzz)");
+      return;
+    }
+
+    if (state.password.length < 8) {
+      Alert.alert("Your password must have at least 8 characters");
+      return;
+    }
+
     console.log(state);
     setState(initialState);
+    navigation.navigate("Home", {
+      userName: state.userName,
+      email: state.email,
+    });
   };
 
   const handlePasswordVisibility = () => {
@@ -69,25 +90,30 @@ export const RegistrationScreen = () => {
                   style={styles.input}
                   value={state.userName}
                   onChangeText={(text) =>
-                    setState({ ...state, userName: text })
+                    setState({ ...state, userName: text.trim() })
                   }
                   placeholder="Login"
                 ></TextInput>
                 <TextInput
                   style={styles.input}
                   value={state.email}
-                  onChangeText={(text) => setState({ ...state, email: text })}
+                  keyboardType="email-address"
+                  onChangeText={(text) =>
+                    setState({ ...state, email: text.trim() })
+                  }
                   placeholder="Email"
                 ></TextInput>
                 <View style={styles.passwordContainer}>
                   <TextInput
                     style={styles.inputLast}
                     secureTextEntry={!isShowPassword}
+                    minLength={8}
+                    maxLength={16}
                     onChangeText={(text) =>
-                      setState({ ...state, password: text })
+                      setState({ ...state, password: text.trim() })
                     }
                     value={state.password}
-                    placeholder="Password"
+                    placeholder="Password (at least 8 characters)"
                   ></TextInput>
                   <TouchableOpacity
                     style={styles.showPasswordContainer}
@@ -104,7 +130,15 @@ export const RegistrationScreen = () => {
                 <Text style={styles.btnLabel}>Sign Up</Text>
               </TouchableOpacity>
               <View>
-                <TouchableOpacity style={styles.textLogInContainer}>
+                <TouchableOpacity
+                  style={styles.textLogInContainer}
+                  onPress={() =>
+                    navigation.navigate("Login", {
+                      name: state.userName,
+                      email: state.email,
+                    })
+                  }
+                >
                   <Text style={styles.textLogIn}>
                     Already have account? Log In
                   </Text>

@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     position: "absolute",
     //
-    transform: [{ translateX: -216 }, { translateY: -60 }],
+    transform: [{ translateX: -216 }, { translateY: -132 }],
 
     width: 432,
     height: 548,
