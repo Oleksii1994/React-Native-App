@@ -1,72 +1,173 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
-// import React, { useState } from "react";
+import React from "react";
+import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons, Feather, AntDesign } from "@expo/vector-icons";
 
-import { styles } from "../styles/posts.styles";
-// const initialState = {
-//   name: "",
-//   userEmail: "",
+import { PostsScreen } from "./PostsScreen";
+import { CreatePostsScreen } from "./CreatePostsScreen";
+import { CommentsScreen } from "./CommentsScreen";
+import { ProfileScreen } from "./ProfileScreen";
+// import { styles } from "../styles/posts.styles";
+
+const MainTab = createBottomTabNavigator();
+
+// const Posts = () => {
+//   return (
+//     <TouchableOpacity
+//       onPress={() =>
+//         navigation.navigate("Posts", {
+//           screen: "Login",
+//           params: { userName, email },
+//         })
+//       }
+//     >
+//       <Image
+//         source={require("../assets/images/grid.png")}
+//         style={{ width: 40, height: 40 }}
+//       />
+//     </TouchableOpacity>
+//   );
+// };
+
+// const CreatePost = () => {
+//   return (
+//     <TouchableOpacity
+//       style={styles.addBtn}
+//       onPress={() => navigation.navigate("CreatePostsScreen")}
+//     >
+//       <View style={styles.addBox}>
+//         <Image source={require("../assets/images/union.png")} />
+//       </View>
+//     </TouchableOpacity>
+//   );
+// };
+
+// const UserPage = () => {
+//   return (
+//     <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>
+//       <Image
+//         source={require("../assets/images/user.png")}
+//         style={{ width: 40, height: 40 }}
+//       />
+//     </TouchableOpacity>
+//   );
 // };
 
 export const Home = () => {
-  const navigation = useNavigation();
-  // const [state, setState] = useState(initialState);
-  const {
-    params: { userName, email },
-  } = useRoute();
-
-  // setState((prevState)=>{ ...prevState, name: userName, userEmail: email });
   return (
-    <View style={styles.postsContainer}>
-      {/* <TouchableOpacity
-        style={styles.logoutBtn}
-        onPress={() => navigation.navigate("Login")}
-      >
-        <Image
-          source={require("../assets/images/logout.png")}
-          style={{ width: 24, height: 24 }}
-        ></Image>
-      </TouchableOpacity> */}
-      <View style={styles.userContainer}>
-        <View style={styles.photoBox}></View>
-        <View style={styles.userInfoBox}>
-          <Text>{userName}</Text>
-          <Text>{email}</Text>
-        </View>
-      </View>
-      <View style={styles.footer}>
-        <TouchableOpacity
-          onPress={() =>
-            // navigation.navigate("Posts", {
-            //   userName,
-            //   email,
-            // })
-            navigation.navigate("Posts", {
-              screen: "Login",
-              params: { userName, email },
-            })
+    <MainTab.Navigator
+      screenOptions={({ route, navigation }) => ({
+        headerLeft: () => {
+          if (
+            route.name === "Comments" ||
+            route.name === "Create" ||
+            route.name === "Profile"
+          ) {
+            return (
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color="black"
+                style={{ marginLeft: 10 }}
+                onPress={() => navigation.goBack()}
+              />
+            );
+          } else {
+            return null;
           }
-        >
-          <Image
-            source={require("../assets/images/grid.png")}
-            style={{ width: 40, height: 40 }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.addBtn}
-          onPress={() => navigation.navigate("CreatePostsScreen")}
-        >
-          <View style={styles.addBox}>
-            <Image source={require("../assets/images/union.png")} />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>
-          <Image
-            source={require("../assets/images/user.png")}
-            style={{ width: 40, height: 40 }}
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
+        },
+        headerRight: () => {
+          if (route.name === "Posts") {
+            return (
+              <Feather
+                name="log-out"
+                size={24}
+                color="#BDBDBD"
+                style={{ marginRight: 21 }}
+                onPress={() => {
+                  navigation.navigate("Login");
+                }}
+              />
+            );
+          } else {
+            return null;
+          }
+        },
+        headerTitleAlign: "center",
+        tabBarActiveTintColor: "#FF6C00",
+        tabBarLabelStyle: { display: "none" },
+      })}
+    >
+      <MainTab.Screen
+        name="Posts"
+        component={PostsScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="grid" size={size} color={color} />
+          ),
+        }}
+      />
+      <MainTab.Screen
+        name="Create"
+        component={CreatePostsScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <View style={styles.btnLinkToCreate}>
+              <AntDesign name="plus" size={size} color={"#FFF"} />
+            </View>
+          ),
+        }}
+      />
+      {/* <MainTab.Screen
+        name="Коментарі"
+        component={CommentsScreen}
+        options={{ tabBarButton: () => null }}
+      /> */}
+      <MainTab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          // headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="user" size={size} color={color} />
+          ),
+        }}
+      />
+    </MainTab.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  tabBarStyle: {
+    height: 85,
+    paddingLeft: 80,
+    paddingRight: 80,
+    marginBottom: 20,
+  },
+  tabIconWrapperStyle: {
+    position: "absolute",
+    top: 9,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomWidth: 5,
+    paddingBottom: 20,
+  },
+  tabIconStyle: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingLeft: 23,
+    paddingRight: 23,
+    paddingTop: 8,
+    paddingBottom: 8,
+    borderRadius: 20,
+  },
+  btnLinkToCreate: {
+    backgroundColor: "#FF6C00",
+    width: 70,
+    height: 40,
+    borderRadius: 20,
+
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

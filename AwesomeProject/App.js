@@ -24,26 +24,28 @@ export default function App() {
           name="Home"
           component={Home}
           options={({ navigation }) => ({
+            headerShown: false,
             // Обновленная часть
-            headerRight: () => (
-              <TouchableOpacity
-                style={styles.logoutBtn}
-                onPress={() =>
-                  navigation.navigate("Login", { screen: "Login" })
-                }
-              >
-                <Image
-                  source={require("./assets/images/logout.png")}
-                  style={{ width: 24, height: 24, marginRight: 10 }}
-                ></Image>
-              </TouchableOpacity>
-            ),
+            // headerRight: () => (
+            //   <TouchableOpacity
+            //     style={styles.logoutBtn}
+            //     onPress={() =>
+            //       navigation.navigate("Login", { screen: "Login" })
+            //     }
+            //   >
+            //     <Image
+            //       source={require("./assets/images/logout.png")}
+            //       style={{ width: 24, height: 24, marginRight: 10 }}
+            //     ></Image>
+            //   </TouchableOpacity>
+            // ),
           })}
         />
-        <MainStack.Screen
-          name="Posts"
+        {/* <MainStack.Screen
+          name="Home"
           component={Home}
           options={({ navigation }) => ({
+            headerShown: false,
             headerRight: () => (
               <TouchableOpacity
                 style={styles.logoutBtn}
@@ -58,12 +60,12 @@ export default function App() {
               </TouchableOpacity>
             ),
           })}
-        />
-        <MainStack.Screen
+        /> */}
+        {/* <MainStack.Screen
           name="CreatePostsScreen"
           component={CreatePostsScreen}
         />
-        <MainStack.Screen name="ProfileScreen" component={ProfileScreen} />
+        <MainStack.Screen name="ProfileScreen" component={ProfileScreen} /> */}
       </MainStack.Navigator>
     </NavigationContainer>
   );
