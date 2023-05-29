@@ -10,10 +10,20 @@ import { CreatePostsScreen } from "./Screens/CreatePostsScreen";
 import { LoginScreen } from "./Screens/LoginScreen";
 import { ProfileScreen } from "./Screens/ProfileScreen";
 import { Home } from "./Screens/Home";
+import { useFonts } from "expo-font";
 
 const MainStack = createStackNavigator();
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    RobotoMedium: require("./assets/fonts/robotomedium.ttf"),
+    RobotoRegular: require("./assets/fonts/robotoregular.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    // Возвращайте экран загрузки или null, пока шрифты не загружены
+    return null;
+  }
   return (
     <NavigationContainer>
       <MainStack.Navigator initialRouteName="Login">

@@ -7,6 +7,7 @@ import { PostsScreen } from "./PostsScreen";
 import { CreatePostsScreen } from "./CreatePostsScreen";
 import { CommentsScreen } from "./CommentsScreen";
 import { ProfileScreen } from "./ProfileScreen";
+import { useRoute } from "@react-navigation/native";
 // import { styles } from "../styles/posts.styles";
 
 const MainTab = createBottomTabNavigator();
@@ -54,9 +55,11 @@ const MainTab = createBottomTabNavigator();
 // };
 
 export const Home = () => {
+  const routes = useRoute();
   return (
     <MainTab.Navigator
       screenOptions={({ route, navigation }) => ({
+        // if(route.name==="Create')
         headerLeft: () => {
           if (
             route.name === "Comments" ||
