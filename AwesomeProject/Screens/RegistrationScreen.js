@@ -52,8 +52,8 @@ export const RegistrationScreen = () => {
     console.log(state);
     setState(initialState);
     navigation.navigate("Home", {
-      userName: state.userName,
-      email: state.email,
+      screen: "Posts",
+      params: { name: state.userName, userEmail: state.email },
     });
   };
 

@@ -64,16 +64,16 @@ export const CreatePostsScreen = () => {
   //   RobotoRegular: require("../assets/fonts/robotoregular.ttf"),
   // });
 
-  const showLocationsOfInterest = () => {
-    return locationsOfInterest.map((item, index) => (
-      <Marker
-        key={index}
-        title={item.title}
-        description={item.description}
-        coordinate={item.location}
-      />
-    ));
-  };
+  // const showLocationsOfInterest = () => {
+  //   return locationsOfInterest.map((item, index) => (
+  //     <Marker
+  //       key={index}
+  //       title={item.title}
+  //       description={item.description}
+  //       coordinate={item.location}
+  //     />
+  //   ));
+  // };
   const onRegionChange = (region) => {
     console.log(region);
   };
@@ -112,6 +112,11 @@ export const CreatePostsScreen = () => {
       setLocation(coords);
     })();
     setShowMap(false);
+    setPhoto("");
+    setPoint("");
+    setTitle("");
+    setLocation(null);
+    setCamera(null);
   }, []);
 
   // const handleCameraRef = (ref) => {
@@ -161,12 +166,14 @@ export const CreatePostsScreen = () => {
           <TextInput
             style={styles.input}
             name="title"
+            onChangeText={(text) => setTitle(text)}
             placeholder="title..."
           ></TextInput>
           <TextInput
             style={styles.inputLocation}
             name="location"
-            placeholder={point ? point : "location..."}
+            onChangeText={(text) => setPoint(text)}
+            placeholder={"location..."}
           ></TextInput>
           <Image
             source={require("../assets/images/map-pin.png")}
@@ -176,6 +183,9 @@ export const CreatePostsScreen = () => {
           <TouchableOpacity style={styles.button} onPress={onShowMap}>
             <Text style={styles.btnLabel}>Choose geolocation</Text>
           </TouchableOpacity>
+          <Text>{photo}</Text>
+          <Text>{title}</Text>
+          <Text>{point}</Text>
 
           {showMap && (
             <TouchableOpacity onPress={() => setShowMap(false)}>
@@ -195,9 +205,8 @@ export const CreatePostsScreen = () => {
                     longitudeDelta: 0.0421,
                   }}
                   showsUserLocation={true}
-                  // onLongPress={() => setShowMap(false)}
                   mapType="standard"
-                  // minZoomLevel={15}
+                  minZoomLevel={15}
                   onMapReady={() => {
                     Alert.alert(
                       "Tap anywhere over the borders of map to close it"
@@ -220,7 +229,16 @@ export const CreatePostsScreen = () => {
 
           {!showMap && (
             <TouchableOpacity
-              onPress={() => navigation.navigate("Posts")}
+              onPress={() =>
+                navigation.navigate("Home", {
+                  screen: "Posts",
+                  params: {
+                    postTitle: title,
+                    postPhoto: photo,
+                    postPoint: point,
+                  },
+                })
+              }
               style={
                 photo || photo & title || photo & location
                   ? styles.button
@@ -261,6 +279,7 @@ export const CreatePostsScreen = () => {
           onPress={() => {
             setPhoto("");
             setPoint("");
+            setTitle("");
             setLocation(null);
           }}
         >
