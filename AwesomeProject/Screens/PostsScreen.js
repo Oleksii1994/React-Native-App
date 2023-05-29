@@ -6,22 +6,19 @@ import { styles } from "../styles/posts.styles";
 //Home
 
 export const PostsScreen = () => {
+  const [postsArr, setPostsArr] = useState([]);
+  const [postsToRender, setPostsToRender] = useState(postsArr);
   const [userLogin, setUserLogin] = useState("");
   const [email, setEmail] = useState("");
   const [title, setTitle] = useState("");
   const [photo, setPhoto] = useState("");
   const [point, setPoint] = useState("");
   const navigation = useNavigation();
-  // const {
-  //   params: {
-  //     name = "",
-  //     userEmail = "",
-  //     title = "",
-  //     photo = "",
-  //     location = "",
-  //   },
-  // } = useRoute();
-  // const { params } = useRoute();
+
+  // const transformData = () => {
+  //   const dataObj = { postTitle: title, postPhoto: photo, postPoint: point };
+  //   setPostsArr((prevState) => [...prevState, ...dataObj]);
+  // };
 
   const {
     params: {
@@ -33,23 +30,39 @@ export const PostsScreen = () => {
     },
   } = useRoute();
 
+  // const renderPosts = () => {
+  //   return postsArr.map((item, index) => {
+  //     return (
+  //       <View key={index}>
+  //         <Image sourse={{ uri: item.postPhoto }} />
+  //         <Text>{item.postTitle}</Text>
+  //         <Text>{item.postPoint}</Text>
+  //       </View>
+  //     );
+  //   });
+  // };
+
   useEffect(() => {
     setUserLogin(name);
     setEmail(userEmail);
     setTitle(postTitle);
     setPhoto(postPhoto);
     setPoint(postPoint);
+
+    if (title !== "" && photo !== "" && point !== "") {
+      const postObject = {
+        postTitle: title,
+        postPhoto: photo,
+        postPoint: point,
+      };
+      setPostsArr((prevState) => [...prevState, postObject]);
+      console.log(postsArr);
+    }
   }, [title, photo, point]);
 
-  // const handleLogin = () => {
-  //   setUserLogin(name);
-  //   return <Text>{userLogin}</Text>;
-  // };
-
-  // const handleEmail = () => {
-  //   setEmail(userEmail);
-  //   return <Text>{email}</Text>;
-  // };
+  useEffect(() => {
+    setPostsToRender(postsArr);
+  }, [postsArr]);
 
   return (
     <View style={styles.postsContainer}>
@@ -59,14 +72,24 @@ export const PostsScreen = () => {
           <Text>{userLogin}</Text>
 
           <Text>{email}</Text>
-          {/* <Text>{title}</Text>
-          <Text>{point}</Text> */}
         </View>
       </View>
       <View>
-        <Text>{photo}</Text>
-        <Text>{title}</Text>
-        <Text>{point}</Text>
+        {
+          postsToRender.map((item, index) => (
+            <View key={index}>
+              <Image
+                sourse={{ uri: item.postPhoto }}
+                style={{ width: 200, height: 200 }}
+              />
+              <Text>{item.postTitle}</Text>
+              <Text>{item.postPoint}</Text>
+            </View>
+          ))
+          //   <Text>{photo}</Text>
+          // <Text>{title}</Text>
+          // <Text>{point}</Text>
+        }
       </View>
     </View>
   );

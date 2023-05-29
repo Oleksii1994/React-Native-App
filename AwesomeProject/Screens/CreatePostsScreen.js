@@ -183,9 +183,6 @@ export const CreatePostsScreen = () => {
           <TouchableOpacity style={styles.button} onPress={onShowMap}>
             <Text style={styles.btnLabel}>Choose geolocation</Text>
           </TouchableOpacity>
-          <Text>{photo}</Text>
-          <Text>{title}</Text>
-          <Text>{point}</Text>
 
           {showMap && (
             <TouchableOpacity onPress={() => setShowMap(false)}>
