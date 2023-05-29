@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useState, useEffect, useRef } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
@@ -20,8 +21,27 @@ import { PROVIDER_GOOGLE } from "react-native-maps";
 
 // const apiKey = "pk.ac7a441bd462fa3aa0b8d5b701b6e8b1";
 const apiKey = "AIzaSyD3Lu8Msh9lq1krTFrdoCayClRARhwafIo";
+// let locationsOfInterest = [
+//   {
+//     title: "First",
+//     location: {
+//       latitude: 50.39294500191538,
+//       longitude: 30.606561675667763,
+//     },
+//     description: "My First Marker",
+//   },
+//   {
+//     title: "Second",
+//     location: {
+//       latitude: 50.23,
+//       longitude: 30.54,
+//     },
+//     description: "My Second Marker",
+//   },
+// ];
 
 export const CreatePostsScreen = () => {
+  const navigation = useNavigation();
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState("");
   const [hasPermission, setHasPermission] = useState(null);
@@ -30,13 +50,33 @@ export const CreatePostsScreen = () => {
   const [point, setPoint] = useState("");
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("null");
+  // const [draggableMarkerCoord, setDraggableMarkerCoord] = useState({
+  //   latitude: 50.39294500191538,
+  //   longitude: 30.606561675667763,
+  //   // latitudeDelta: 0.007304944122623169,
+  //   // longitudeDelta: 0.01574993133545277,
+  // });
   // const [hasPermission, setHasPermission] = useState(null);
   // const cameraRef = useRef(null);
-  // const [type, setType] = useState(Camera.Constants.Type.back);
+
   // const [fontsLoaded] = useFonts({
   //   RobotoMedium: require("../assets/fonts/robotomedium.ttf"),
   //   RobotoRegular: require("../assets/fonts/robotoregular.ttf"),
   // });
+
+  const showLocationsOfInterest = () => {
+    return locationsOfInterest.map((item, index) => (
+      <Marker
+        key={index}
+        title={item.title}
+        description={item.description}
+        coordinate={item.location}
+      />
+    ));
+  };
+  const onRegionChange = (region) => {
+    console.log(region);
+  };
 
   const onShowMap = () => {
     setShowMap(true);
@@ -79,14 +119,6 @@ export const CreatePostsScreen = () => {
 
   // };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const { status } = await Camera.requestCameraPermissionsAsync();
-  //     await MediaLibrary.requestPermissionsAsync();
-
-  //     setHasPermission(status === "granted");
-  //   })();
-  // }, []);
   if (hasPermission === null) {
     return <Text>Please give an access to camera</Text>;
   }
@@ -96,7 +128,12 @@ export const CreatePostsScreen = () => {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+        setShowMap(false);
+      }}
+    >
       <View style={styles.container}>
         <View style={styles.photoContainer}>
           <View style={styles.photoThumb}>
@@ -146,25 +183,33 @@ export const CreatePostsScreen = () => {
                 <MapView
                   style={styles.mapStyle}
                   provider={PROVIDER_GOOGLE}
+                  initialRegion={{
+                    latitude: 50.39294500191538,
+                    longitude: 30.606561675667763,
+                    latitudeDelta: 0.007304944122623169,
+                    longitudeDelta: 0.01574993133545277,
+                  }}
                   region={{
                     ...location,
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
                   }}
                   showsUserLocation={true}
-                  onLongPress={() => setShowMap(false)}
-                  // userLocationAnnotationTitle
+                  // onLongPress={() => setShowMap(false)}
                   mapType="standard"
-                  minZoomLevel={15}
+                  // minZoomLevel={15}
                   onMapReady={() => {
-                    Alert.alert("Long press on the map will close it");
+                    Alert.alert(
+                      "Tap anywhere over the borders of map to close it"
+                    );
                     setPoint("Kiev, Ukraine");
                   }}
-                  // onPoiClick={() => console.log(name)}
-                  onRegionChange={() => console.log("Region change")}
+                  onRegionChange={onRegionChange}
                 >
+                  {/* {showLocationsOfInterest()} */}
                   <Marker
-                    title={point}
+                    draggable
+                    title={"I am here"}
                     coordinate={location}
                     description="Hello"
                   />
@@ -175,6 +220,7 @@ export const CreatePostsScreen = () => {
 
           {!showMap && (
             <TouchableOpacity
+              onPress={() => navigation.navigate("Posts")}
               style={
                 photo || photo & title || photo & location
                   ? styles.button
@@ -227,47 +273,3 @@ export const CreatePostsScreen = () => {
     </TouchableWithoutFeedback>
   );
 };
-
-// <Camera style={styles.camera} type={type} ref={setCameraRef}>
-//   <View style={styles.photoView}>
-//     <TouchableOpacity
-//       style={styles.flipContainer}
-//       onPress={() => {
-//         setType(
-//           type === Camera.Constants.Type.back
-//             ? Camera.Constants.Type.front
-//             : Camera.Constants.Type.back
-//         );
-//       }}
-//     >
-//       <Text style={{ fontSize: 18, marginBottom: 10, color: "white" }}>
-//         {" "}
-//         Flip{" "}
-//       </Text>
-//     </TouchableOpacity>
-//     <TouchableOpacity
-//       style={styles.buttonCamera}
-//       onPress={async () => {
-//         if (cameraRef) {
-//           const { uri } = await cameraRef.takePictureAsync();
-//           await MediaLibrary.createAssetAsync(uri);
-//         }
-//       }}
-//     >
-//       <View style={styles.takePhotoOut}>
-//         <View style={styles.takePhotoInner}></View>
-//       </View>
-//     </TouchableOpacity>
-//   </View>
-// </Camera>
-
-{
-  /* <View style={styles.photoThumb}>
-            <TouchableOpacity>
-              <Image
-                style={styles.photoIcon}
-                source={require("../assets/images/group.png")}
-              ></Image>
-            </TouchableOpacity>
-          </View> */
-}
