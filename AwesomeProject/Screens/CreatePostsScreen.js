@@ -7,11 +7,13 @@ import {
   Image,
   TouchableWithoutFeedback,
   Dimensions,
+  Alert,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useState, useEffect, useRef } from "react";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
+import * as Location from "expo-location";
 import { useFonts } from "expo-font";
 import { styles } from "../styles/createPost.styles";
 import { PROVIDER_GOOGLE } from "react-native-maps";
@@ -25,6 +27,7 @@ export const CreatePostsScreen = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [showMap, setShowMap] = useState("false");
+  const [point, setPoint] = useState("");
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("null");
   // const [hasPermission, setHasPermission] = useState(null);
@@ -51,6 +54,22 @@ export const CreatePostsScreen = () => {
       await MediaLibrary.requestPermissionsAsync();
 
       setHasPermission(status === "granted");
+    })();
+
+    (async () => {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permission to access location was denied");
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      console.log(location);
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+      console.log(coords);
+      setLocation(coords);
     })();
     setShowMap(false);
   }, []);
@@ -110,7 +129,7 @@ export const CreatePostsScreen = () => {
           <TextInput
             style={styles.inputLocation}
             name="location"
-            placeholder="location..."
+            placeholder={point ? point : "location..."}
           ></TextInput>
           <Image
             source={require("../assets/images/map-pin.png")}
@@ -128,19 +147,25 @@ export const CreatePostsScreen = () => {
                   style={styles.mapStyle}
                   provider={PROVIDER_GOOGLE}
                   region={{
-                    latitude: 37.78825,
-                    longitude: -122.4324,
+                    ...location,
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
                   }}
+                  showsUserLocation={true}
+                  onLongPress={() => setShowMap(false)}
+                  // userLocationAnnotationTitle
                   mapType="standard"
                   minZoomLevel={15}
-                  onMapReady={() => console.log("Map is ready")}
+                  onMapReady={() => {
+                    Alert.alert("Long press on the map will close it");
+                    setPoint("Kiev, Ukraine");
+                  }}
+                  // onPoiClick={() => console.log(name)}
                   onRegionChange={() => console.log("Region change")}
                 >
                   <Marker
-                    title="I am here"
-                    coordinate={{ latitude: 37.78825, longitude: -122.4324 }}
+                    title={point}
+                    coordinate={location}
                     description="Hello"
                   />
                 </MapView>
@@ -149,8 +174,39 @@ export const CreatePostsScreen = () => {
           )}
 
           {!showMap && (
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.btnLabel}>Post</Text>
+            <TouchableOpacity
+              style={
+                photo || photo & title || photo & location
+                  ? styles.button
+                  : {
+                      alignSelf: "center",
+                      alignContent: "center",
+                      justifyContent: "center",
+                      backgroundColor: "#F6F6F6",
+                      width: 344,
+                      height: 50,
+                      borderRadius: 100,
+                      padding: 16,
+                      marginBottom: 16,
+                    }
+              }
+            >
+              <Text
+                style={
+                  photo || photo & title || photo & location
+                    ? styles.btnLabel
+                    : {
+                        alignSelf: "center",
+                        color: "#BDBDBD",
+                        fontFamily: "RobotoRegular",
+                        fontWeight: 400,
+                        fontSize: 16,
+                        lineHeight: 19,
+                      }
+                }
+              >
+                Post
+              </Text>
             </TouchableOpacity>
           )}
         </View>
@@ -158,6 +214,8 @@ export const CreatePostsScreen = () => {
           style={styles.buttonTrash}
           onPress={() => {
             setPhoto("");
+            setPoint("");
+            setLocation(null);
           }}
         >
           <Image

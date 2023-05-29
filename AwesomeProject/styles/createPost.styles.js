@@ -93,7 +93,7 @@ export const styles = StyleSheet.create({
     alignSelf: "center",
     alignContent: "center",
     justifyContent: "center",
-    backgroundColor: "#F6F6F6",
+    backgroundColor: "#FF6C00",
     width: 344,
     height: 50,
     borderRadius: 100,
@@ -103,7 +103,7 @@ export const styles = StyleSheet.create({
 
   btnLabel: {
     alignSelf: "center",
-    color: "#BDBDBD",
+    color: "#FFFFFF",
     fontFamily: "RobotoRegular",
     fontWeight: 400,
     fontSize: 16,
@@ -112,7 +112,7 @@ export const styles = StyleSheet.create({
 
   buttonTrash: {
     positon: "absolute",
-    bottom: -96,
+    bottom: -60,
     alignSelf: "center",
     alignContent: "center",
     justifyContent: "center",
