@@ -12,6 +12,9 @@ import { ProfileScreen } from "./Screens/ProfileScreen";
 import { Home } from "./Screens/Home";
 import { useFonts } from "expo-font";
 
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+
 const MainStack = createStackNavigator();
 
 export default function App() {
@@ -25,67 +28,32 @@ export default function App() {
     return null;
   }
   return (
-    <NavigationContainer>
-      <MainStack.Navigator initialRouteName="Login">
-        <MainStack.Screen name="Registration" component={RegistrationScreen} />
-
-        <MainStack.Screen name="Login" component={LoginScreen} />
-        <MainStack.Screen
-          name="Home"
-          component={Home}
-          options={({ navigation }) => ({
-            headerShown: false,
-            // Обновленная часть
-            // headerRight: () => (
-            //   <TouchableOpacity
-            //     style={styles.logoutBtn}
-            //     onPress={() =>
-            //       navigation.navigate("Login", { screen: "Login" })
-            //     }
-            //   >
-            //     <Image
-            //       source={require("./assets/images/logout.png")}
-            //       style={{ width: 24, height: 24, marginRight: 10 }}
-            //     ></Image>
-            //   </TouchableOpacity>
-            // ),
-          })}
-        />
-        {/* <MainStack.Screen
-          name="Home"
-          component={Home}
-          options={({ navigation }) => ({
-            headerShown: false,
-            headerRight: () => (
-              <TouchableOpacity
-                style={styles.logoutBtn}
-                onPress={() =>
-                  navigation.navigate("Login", { screen: "Login" })
-                }
-              >
-                <Image
-                  source={require("./assets/images/logout.png")}
-                  style={{ width: 24, height: 24, marginRight: 10 }}
-                ></Image>
-              </TouchableOpacity>
-            ),
-          })}
-        /> */}
-        {/* <MainStack.Screen
-          name="CreatePostsScreen"
-          component={CreatePostsScreen}
-        />
-        <MainStack.Screen name="ProfileScreen" component={ProfileScreen} /> */}
-      </MainStack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <MainStack.Navigator initialRouteName="Login">
+          <MainStack.Screen
+            name="Registration"
+            component={RegistrationScreen}
+          />
+          <MainStack.Screen name="Login" component={LoginScreen} />
+          <MainStack.Screen
+            name="Home"
+            component={Home}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+        </MainStack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: "#fff",
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+// });
