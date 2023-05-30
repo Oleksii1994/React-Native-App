@@ -10,8 +10,12 @@ import {
   Alert,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import { useState, useEffect, useRef } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  useNavigation,
+  useRoute,
+  useFocusEffect,
+} from "@react-navigation/native";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
@@ -19,26 +23,7 @@ import { useFonts } from "expo-font";
 import { styles } from "../styles/createPost.styles";
 import { PROVIDER_GOOGLE } from "react-native-maps";
 
-// const apiKey = "pk.ac7a441bd462fa3aa0b8d5b701b6e8b1";
 const apiKey = "AIzaSyD3Lu8Msh9lq1krTFrdoCayClRARhwafIo";
-// let locationsOfInterest = [
-//   {
-//     title: "First",
-//     location: {
-//       latitude: 50.39294500191538,
-//       longitude: 30.606561675667763,
-//     },
-//     description: "My First Marker",
-//   },
-//   {
-//     title: "Second",
-//     location: {
-//       latitude: 50.23,
-//       longitude: 30.54,
-//     },
-//     description: "My Second Marker",
-//   },
-// ];
 
 export const CreatePostsScreen = () => {
   const navigation = useNavigation();
@@ -50,12 +35,7 @@ export const CreatePostsScreen = () => {
   const [point, setPoint] = useState("");
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("null");
-  // const [draggableMarkerCoord, setDraggableMarkerCoord] = useState({
-  //   latitude: 50.39294500191538,
-  //   longitude: 30.606561675667763,
-  //   // latitudeDelta: 0.007304944122623169,
-  //   // longitudeDelta: 0.01574993133545277,
-  // });
+
   // const [hasPermission, setHasPermission] = useState(null);
   // const cameraRef = useRef(null);
 
@@ -64,16 +44,14 @@ export const CreatePostsScreen = () => {
   //   RobotoRegular: require("../assets/fonts/robotoregular.ttf"),
   // });
 
-  // const showLocationsOfInterest = () => {
-  //   return locationsOfInterest.map((item, index) => (
-  //     <Marker
-  //       key={index}
-  //       title={item.title}
-  //       description={item.description}
-  //       coordinate={item.location}
-  //     />
-  //   ));
-  // };
+  const resetValues = () => {
+    setCamera(null);
+    setPhoto("");
+    setPoint("");
+    setTitle("");
+    setLocation(null);
+  };
+
   const onRegionChange = (region) => {
     console.log(region);
   };
@@ -119,11 +97,6 @@ export const CreatePostsScreen = () => {
     setCamera(null);
   }, []);
 
-  // const handleCameraRef = (ref) => {
-  //   setCameraRef(ref);
-
-  // };
-
   if (hasPermission === null) {
     return <Text>Please give an access to camera</Text>;
   }
@@ -142,7 +115,11 @@ export const CreatePostsScreen = () => {
       <View style={styles.container}>
         <View style={styles.photoContainer}>
           <View style={styles.photoThumb}>
-            <Camera style={styles.camera} ref={setCamera} type={type}>
+            <Camera
+              style={styles.camera}
+              ref={(ref) => setCamera(ref)}
+              type={type}
+            >
               {photo && (
                 <View style={styles.photoView}>
                   <Image
@@ -165,15 +142,17 @@ export const CreatePostsScreen = () => {
         <View style={styles.inputsContainer}>
           <TextInput
             style={styles.input}
-            name="title"
+            // name="title"
+            value={title}
             onChangeText={(text) => setTitle(text)}
             placeholder="title..."
           ></TextInput>
           <TextInput
             style={styles.inputLocation}
-            name="location"
+            // name="location"
+            value={point}
             onChangeText={(text) => setPoint(text)}
-            placeholder={"location..."}
+            placeholder="location..."
           ></TextInput>
           <Image
             source={require("../assets/images/map-pin.png")}
@@ -226,7 +205,7 @@ export const CreatePostsScreen = () => {
 
           {!showMap && (
             <TouchableOpacity
-              onPress={() =>
+              onPress={() => {
                 navigation.navigate("Home", {
                   screen: "Posts",
                   params: {
@@ -234,8 +213,10 @@ export const CreatePostsScreen = () => {
                     postPhoto: photo,
                     postPoint: point,
                   },
-                })
-              }
+                });
+
+                resetValues();
+              }}
               style={
                 photo || photo & title || photo & location
                   ? styles.button
@@ -254,7 +235,7 @@ export const CreatePostsScreen = () => {
             >
               <Text
                 style={
-                  photo || photo & title || photo & location
+                  photo || (photo && title) || (photo && location)
                     ? styles.btnLabel
                     : {
                         alignSelf: "center",
